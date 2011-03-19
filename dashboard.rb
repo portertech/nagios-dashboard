@@ -43,7 +43,9 @@ EventMachine.epoll if EventMachine.epoll?
 EventMachine.kqueue = true if EventMachine.kqueue?
 EventMachine.run do
   class Dashboard < Sinatra::Base
-    enable :static, :logging
+    set :logging, true
+    set :static, true
+    set :public, 'public'
     get '/' do
       haml :dashboard
     end
