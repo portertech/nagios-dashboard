@@ -37,18 +37,18 @@ optparse.parse!
 
 @log = Logger.new(@options[:logfile])
 
-def log_message(message)
-  if @options[:verbose]
-    puts message
-  end
-  @log.debug(message)
-end
-
-log_message('starting ...')
-
 EventMachine.epoll if EventMachine.epoll?
 EventMachine.kqueue = true if EventMachine.kqueue?
 EventMachine.run do
+  def log_message(message)
+    if @options[:verbose]
+      puts message
+    end
+    EventMachine.defer(proc{@log.debug(message)})
+  end
+
+  log_message('starting ...')
+
   class Dashboard < Sinatra::Base
     enable :logging
     get '/' do
@@ -60,11 +60,11 @@ EventMachine.run do
   EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8000) do |websocket|
     websocket.onopen do
       websocket_connections.push websocket
-      EventMachine.defer(proc {log_message('client connected to websocket')})
+      log_message('client connected to websocket')
     end
     websocket.onclose do
       websocket_connections.delete websocket
-      EventMachine.defer(proc{log_message('client disconnected from websocket')})
+      log_message('client disconnected from websocket')
     end
   end
 
