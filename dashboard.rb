@@ -3,6 +3,11 @@ require 'rubygems'
 require 'nagios_analyzer'
 require 'optparse'
 require 'logger'
+require 'json'
+require 'eventmachine'
+require 'em-websocket'
+require 'sinatra/base'
+require 'thin'
 
 @options = {}
 optparse = OptionParser.new do |opts|
@@ -39,10 +44,55 @@ def log_message(message)
   @log.debug(message)
 end
 
-log_message('Getting current Nagios status ...')
+log_message('starting ...')
 
-nagios = NagiosAnalyzer::Status.new(@options[:datfile])
+EventMachine.epoll if EventMachine.epoll?
+EventMachine.kqueue = true if EventMachine.kqueue?
+EventMachine.run do
+  class Dashboard < Sinatra::Base
+    enable :logging
+    get '/' do
+      "foobar"
+    end
+  end
 
-log_message('Parsed Nagios status.dat successfully')
+  websocket_connections = Array.new
+  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8000) do |websocket|
+    websocket.onopen do
+      websocket_connections.push websocket
+      EventMachine.defer(proc {log_message('client connected to websocket')})
+    end
+    websocket.onclose do
+      websocket_connections.delete websocket
+      EventMachine.defer(proc{log_message('client disconnected from websocket')})
+    end
+  end
 
-puts nagios.items.inspect
+  $nagios_status = proc do
+    begin
+      nagios = NagiosAnalyzer::Status.new(@options[:datfile])
+      log_message('parsed nagios status.dat')
+      nagios.items.to_json
+    rescue => error
+      log_message(error)
+    end
+  end
+  
+  $update_clients = proc do |nagios|
+    websocket_connections.each do |websocket|
+      websocket.send nagios
+    end
+    log_message('updated clients')
+  end
+
+  module NagiosMonitor
+    def file_modified
+      EventMachine.defer($nagios_status, $update_clients)
+    end
+  end
+  EventMachine.watch_file(@options[:datfile], NagiosMonitor)
+
+  Dashboard.run!({:port => 8080})
+end
+
+log_message('stopping ...')
