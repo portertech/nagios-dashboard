@@ -8,6 +8,7 @@ require 'eventmachine'
 require 'em-websocket'
 require 'sinatra/base'
 require 'thin'
+require 'haml'
 
 @options = {}
 optparse = OptionParser.new do |opts|
@@ -42,9 +43,9 @@ EventMachine.epoll if EventMachine.epoll?
 EventMachine.kqueue = true if EventMachine.kqueue?
 EventMachine.run do
   class Dashboard < Sinatra::Base
-    enable :logging
+    enable :static, :logging
     get '/' do
-      "foobar"
+      haml :dashboard
     end
   end
 
