@@ -36,24 +36,23 @@ optparse = OptionParser.new do |opts|
 optparse.parse!
 
 @log = Logger.new(@options[:logfile])
+@log.debug('starting dashboard ...')
 
 EventMachine.epoll if EventMachine.epoll?
 EventMachine.kqueue = true if EventMachine.kqueue?
 EventMachine.run do
-  def log_message(message)
-    if @options[:verbose]
-      puts message
-    end
-    EventMachine.defer(proc{@log.debug(message)})
-  end
-
-  log_message('starting ...')
-
   class Dashboard < Sinatra::Base
     enable :logging
     get '/' do
       "foobar"
     end
+  end
+
+  def log_message(message)
+    if @options[:verbose]
+      puts message
+    end
+    EventMachine.defer(proc{@log.debug(message)})
   end
 
   websocket_connections = Array.new
@@ -95,4 +94,4 @@ EventMachine.run do
   Dashboard.run!({:port => 8080})
 end
 
-log_message('stopping ...')
+@log.debug('stopping dashboard ...')
