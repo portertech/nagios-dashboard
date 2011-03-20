@@ -20,8 +20,8 @@ optparse = OptionParser.new do |opts|
     @options[:verbose] = true
   end
 
-  @options[:logfile] = File.dirname(__FILE__) + '/dashboard.log'
-  opts.on('-l', '--logfile FILE', 'Write log messages to FILE (default: ./dashboard.log') do |file|
+  @options[:logfile] = File.dirname(__FILE__) + '/debug.log'
+  opts.on('-l', '--logfile FILE', 'Write log messages to FILE (default: ./debug.log') do |file|
     @options[:logfile] = file
   end
 
