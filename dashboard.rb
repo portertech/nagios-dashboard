@@ -6,6 +6,7 @@ require 'logger'
 require 'json'
 require 'eventmachine'
 require 'em-websocket'
+require 'em-dir-watcher'
 require 'sinatra/base'
 require 'thin'
 require 'haml'
@@ -70,7 +71,7 @@ EventMachine.run do
     end
   end
 
-  $nagios_status = proc do
+  nagios_status = proc do
     begin
       nagios = NagiosAnalyzer::Status.new(@options[:datfile])
       log_message('parsed nagios status.dat')
@@ -80,19 +81,16 @@ EventMachine.run do
     end
   end
   
-  $update_clients = proc do |nagios|
+  update_clients = proc do |nagios|
     websocket_connections.each do |websocket|
       websocket.send nagios
     end
     log_message('updated clients')
   end
 
-  module NagiosMonitor
-    def file_modified
-      EventMachine.defer($nagios_status, $update_clients)
-    end
+  EMDirWatcher.watch File.dirname(File.expand_path(@options[:datfile])), :include_only => ['status.dat'] do
+    EventMachine.defer(nagios_status, update_clients)
   end
-  EventMachine.watch_file(@options[:datfile], NagiosMonitor)
 
   Dashboard.run!({:port => 8080})
 end
