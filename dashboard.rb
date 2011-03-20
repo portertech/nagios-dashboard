@@ -27,7 +27,7 @@ optparse = OptionParser.new do |opts|
 
   @options[:port] = 80
   opts.on('-p', '--port PORT', 'Listen on a different PORT (default: 80)') do |port|
-    @options[:logfile] = port
+    @options[:port] = port
   end
 
   @options[:logfile] = File.dirname(__FILE__) + '/debug.log'
