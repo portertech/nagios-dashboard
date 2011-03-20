@@ -18,12 +18,15 @@
   - A browser with WebSocket support
 
 * Install
-  : wget folder.tar
-  : tar -xvf folder.tar
-  : cd folder && bundle install
+  : cd opt
+  : wget nagios-dashboard.tar
+  : tar -xvf nagios-dashboard.tar
+  : cd nagios-dashboard && bundle install
+  : ln -s /opt/nagios-dashboard/dashboard.rb /usr/local/bin/nagios-dashboard
+  : rehash
 
 * Run
-  : -> % ruby dashboard.rb -h
+  : -> % nagios-dashboard -h
   : Usage: dashboard.rb [options]
   :     -v, --verbose                    Output debug messages to screen
   :     -d, --datfile FILE               Location of Nagios status.dat FILE (default: /var/cache/nagios3/status.dat)
