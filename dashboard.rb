@@ -20,14 +20,19 @@ optparse = OptionParser.new do |opts|
     @options[:verbose] = true
   end
 
-  @options[:logfile] = File.dirname(__FILE__) + '/debug.log'
-  opts.on('-l', '--logfile FILE', 'Write log messages to FILE (default: ./debug.log') do |file|
-    @options[:logfile] = file
-  end
-
   @options[:datfile] = "/var/cache/nagios3/status.dat"
   opts.on('-d', '--datfile FILE', 'Location of Nagios status.dat FILE (default: /var/cache/nagios3/status.dat)') do |file|
     @options[:datfile] = file
+  end
+
+  @options[:port] = 80
+  opts.on('-p', '--port PORT', 'Listen on a different PORT (default: 80)') do |port|
+    @options[:logfile] = port
+  end
+
+  @options[:logfile] = File.dirname(__FILE__) + '/debug.log'
+  opts.on('-l', '--logfile FILE', 'Write log messages to FILE (default: ./debug.log)') do |file|
+    @options[:logfile] = file
   end
 
   opts.on('-h', '--help', 'Display this screen') do
@@ -60,7 +65,7 @@ EventMachine.run do
   end
 
   websocket_connections = Array.new
-  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8000) do |websocket|
+  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 9000) do |websocket|
     websocket.onopen do
       websocket_connections.push websocket
       log_message('client connected to websocket')
@@ -92,7 +97,7 @@ EventMachine.run do
     EventMachine.defer(nagios_status, update_clients)
   end
 
-  Dashboard.run!({:port => 8080})
+  Dashboard.run!({:port => @options[:port]})
 end
 
 @log.debug('stopping dashboard ...')
