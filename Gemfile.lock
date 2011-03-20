@@ -1,0 +1,35 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    addressable (2.2.4)
+    daemons (1.1.0)
+    em-dir-watcher (0.9.4)
+    em-websocket (0.2.1)
+      addressable (>= 2.1.1)
+      eventmachine (>= 0.12.9)
+    eventmachine (0.12.10)
+    haml (3.0.25)
+    json (1.5.1)
+    nagios_analyzer (0.0.1)
+    rack (1.2.2)
+    sinatra (1.2.1)
+      rack (~> 1.1)
+      tilt (>= 1.2.2, < 2.0)
+    thin (1.2.8)
+      daemons (>= 1.0.9)
+      eventmachine (>= 0.12.6)
+      rack (>= 1.0.0)
+    tilt (1.2.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  em-dir-watcher
+  em-websocket
+  eventmachine
+  haml
+  json
+  nagios_analyzer
+  sinatra
+  thin

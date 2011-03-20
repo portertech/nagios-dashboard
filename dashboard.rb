@@ -1,15 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'nagios_analyzer'
 require 'optparse'
 require 'logger'
-require 'json'
-require 'eventmachine'
-require 'em-websocket'
-require 'em-dir-watcher'
-require 'sinatra/base'
-require 'thin'
-require 'haml'
 
 @options = {}
 optparse = OptionParser.new do |opts|
@@ -44,6 +36,9 @@ optparse.parse!
 
 @log = Logger.new(@options[:logfile])
 @log.debug('starting dashboard ...')
+
+require "bundler/setup"
+Bundler.require(:default)
 
 EventMachine.epoll if EventMachine.epoll?
 EventMachine.kqueue if EventMachine.kqueue?
