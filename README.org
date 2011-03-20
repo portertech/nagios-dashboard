@@ -1,0 +1,18 @@
+#+TITLE: A Nagios dashboard using Ruby EventMachine & HTML5 WebSockets
+#+Options: num:nil
+#+STARTUP: odd
+#+Style: <style> h1,h2,h3 {font-family: arial, helvetica, sans-serif} </style>
+
+* How It Works
+  Nagios-Dashboard parses the nagios status.dat file & sends the current status to clients via an HTML5 WebSocket
+
+  The dashboard monitors the status.dat file for changes, any modifications trigger a client update (push)
+
+* Requirements
+*** Server
+  - A Linux distribution running Nagios
+  - Ruby 1.8 or 1.9 (MRI) & RubyGems
+  - Bundler Gem
+
+*** Interface
+  - A browser with WebSocket support
