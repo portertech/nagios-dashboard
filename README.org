@@ -16,3 +16,17 @@
 
 *** Interface
   - A browser with WebSocket support
+
+* Install
+  : wget folder.tar
+  : tar -xvf folder.tar
+  : cd folder && bundle install
+
+* Run
+  : -> % ruby dashboard.rb -h
+  : Usage: dashboard.rb [options]
+  :     -v, --verbose                    Output debug messages to screen
+  :     -d, --datfile FILE               Location of Nagios status.dat FILE (default: /var/cache/nagios3/status.dat)
+  :     -p, --port PORT                  Listen on a different PORT (default: 80)
+  :     -l, --logfile FILE               Write log messages to FILE (default: ./debug.log)
+  :     -h, --help                       Display this screen
