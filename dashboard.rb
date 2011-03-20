@@ -41,7 +41,7 @@ optparse.parse!
 @log.debug('starting dashboard ...')
 
 EventMachine.epoll if EventMachine.epoll?
-EventMachine.kqueue = true if EventMachine.kqueue?
+EventMachine.kqueue if EventMachine.kqueue?
 EventMachine.run do
   class Dashboard < Sinatra::Base
     set :logging, true
