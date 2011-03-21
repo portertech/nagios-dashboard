@@ -44,7 +44,7 @@ div#MainContainer table thead tr th:first-child
 	-webkit-border-top-left-radius: 6px;
 	-moz-border-radius-topleft: 6px;
 	border-top-left-radius: 6px;
-	width: 210px;
+	width: 200px;
 }
 
 div#MainContainer table thead tr th:last-child
