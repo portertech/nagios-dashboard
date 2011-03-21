@@ -1,0 +1,102 @@
+body
+{
+	background-color: #333;
+	background-image: url("/img/10.jpg");
+	font-family: Helvetica;
+	margin: 0;
+	padding: 20px;
+}
+
+div#MainContainer
+{
+	background-color: rgba(30, 30, 30, 0.7);
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
+div#MainContainer h1
+{
+	color: #fff;
+	padding-left: 14px;
+	padding-top: 14px;
+}
+
+div#MainContainer table
+{
+	border-collapse: collapse;
+	width: 100%;
+}
+
+div#MainContainer table thead tr
+{
+	background-color: #000;
+}
+
+div#MainContainer table thead tr th
+{
+	padding: 7px 14px 7px 14px;
+	text-align: left;
+}
+
+div#MainContainer table thead tr th:first-child
+{
+	-webkit-border-top-left-radius: 6px;
+	-moz-border-radius-topleft: 6px;
+	border-top-left-radius: 6px;
+}
+
+div#MainContainer table thead tr th:last-child
+{
+	-webkit-border-top-right-radius: 6px;
+	-moz-border-radius-topright: 6px;
+	border-top-right-radius: 6px;
+}
+
+div#MainContainer table thead tr th
+{
+	color: #fff;
+	font-weight: bold;
+	font-family: Helvetica;
+	font-size: 16px;
+}
+
+div#MainContainer table tbody tr:last-child td:first-child
+{
+	-webkit-border-bottom-left-radius: 6px;
+	-moz-border-radius-bottomleft: 6px;
+	border-bottom-left-radius: 6px;
+}
+
+div#MainContainer table tbody tr:last-child td:last-child
+{
+	-webkit-border-bottom-right-radius: 6px;
+	-moz-border-radius-bottomright: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+div#MainContainer table tbody tr
+{
+	cursor: pointer;
+}
+
+div#MainContainer table tbody tr.Critical
+{
+	background-color: rgba(144, 0, 0, 0.6);
+	/*background-color: #900;*/
+	color: #fff;
+}
+
+div#MainContainer table tbody tr.Warning
+{
+	background-color: rgba(255, 165, 0, 0.6);
+	/*background-color: #ffa500;*/
+	color: #fff;
+}
+
+div#MainContainer table tbody tr td
+{
+	padding: 14px 14px 14px 14px;
+	font-family: Helvetica;
+	font-size: 14px;
+}
