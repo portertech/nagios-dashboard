@@ -5,8 +5,8 @@ require 'logger'
 
 @options = {}
 optparse = OptionParser.new do |opts|
-  `which nagios-dashboard`; opts.banner = case $?.exitstatus == 0
-  when true
+  `which nagios-dashboard`; opts.banner = case $?.exitstatus
+  when 0
     "Usage: nagios-dashboard [options]"
   else
     "Usage: dashboard.rb [options]"
