@@ -5,7 +5,12 @@ require 'logger'
 
 @options = {}
 optparse = OptionParser.new do |opts|
-  opts.banner = "Usage: dashboard.rb [options]"
+  `which nagios-dashboard`; opts.banner = case $?.exitstatus == 0
+  when true
+    "Usage: nagios-dashboard [options]"
+  else
+    "Usage: dashboard.rb [options]"
+  end
 
   @options[:verbose] = false
   opts.on('-v', '--verbose', 'Output debug messages to screen') do
