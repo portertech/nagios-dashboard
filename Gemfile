@@ -1,10 +1,11 @@
 source :rubygems
 gem 'mixlib-cli', :require => 'mixlib/cli'
+gem 'mixlib-log', :require => 'mixlib/log'
 gem 'json'
 gem 'eventmachine'
 gem 'em-websocket'
 gem 'em-dir-watcher'
-#gem 'rb-inotify'
+gem 'rb-inotify'
 gem 'nagios_analyzer'
 gem 'thin', '1.2.8'
 gem 'async_sinatra', :require => 'sinatra/async'

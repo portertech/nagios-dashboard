@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'logger'
 require 'bundler/setup'
 Bundler.require(:default)
 
@@ -56,11 +55,15 @@ class Options
     :exit => 0
 end
 
+class Log
+  extend Mixlib::Log
+end
+
 OPTIONS = Options.new
 OPTIONS.parse_options
 
-@log = Logger.new(OPTIONS.config[:logfile])
-@log.debug('starting dashboard ...')
+Log.init(OPTIONS.config[:logfile])
+Log.debug('starting dashboard ...')
 
 EventMachine.epoll if EventMachine.epoll?
 EventMachine.kqueue if EventMachine.kqueue?
@@ -94,7 +97,7 @@ EventMachine.run do
     if OPTIONS.config[:verbose]
       puts message
     end
-    EventMachine.defer(proc{@log.debug(message)})
+    EventMachine.defer(proc{Log.debug(message)})
   end
 
   websocket_connections = Array.new
