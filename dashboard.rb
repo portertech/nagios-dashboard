@@ -84,12 +84,12 @@ EventMachine.run do
     Spice.connect!
 
     aget '/' do
-      body haml :dashboard
+      EventMachine.defer(proc { haml :dashboard }, proc { |result| body result })
     end
 
     aget '/node/:hostname' do |hostname|
       content_type 'application/json'
-      body Spice.connection.get('/search/node', :q => 'hostname:' + hostname).first
+      EventMachine.defer(proc { Spice.connection.get('/search/node', :q => 'hostname:' + hostname).first }, proc{ |result| body result })
     end
   end
 
@@ -97,7 +97,7 @@ EventMachine.run do
     if OPTIONS.config[:verbose]
       puts message
     end
-    EventMachine.defer(proc{Log.debug(message)})
+    EventMachine.defer(proc { Log.debug(message) })
   end
 
   websocket_connections = Array.new
