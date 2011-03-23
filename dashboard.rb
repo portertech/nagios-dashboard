@@ -84,9 +84,9 @@ EventMachine.run do
       body haml :dashboard
     end
 
-    aget '/chef' do
+    aget '/node/:hostname' do |hostname|
       content_type 'application/json'
-      body Spice.connection.get("/nodes")
+      body Spice.connection.get('/search/node', :q => 'hostname:' + hostname).first
     end
   end
 

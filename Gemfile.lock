@@ -39,8 +39,6 @@ GEM
       abstract (>= 1.0.0)
     eventmachine (0.12.10)
     extlib (0.9.15)
-    ffi (1.0.7)
-      rake (>= 0.8.7)
     haml (3.0.25)
     highline (1.6.1)
     json (1.4.6)
@@ -60,9 +58,6 @@ GEM
       mixlib-log
       systemu
     rack (1.2.2)
-    rake (0.8.7)
-    rb-inotify (0.8.4)
-      ffi (>= 0.5.0)
     rest-client (1.6.1)
       mime-types (>= 1.16)
     sinatra (1.2.1)
@@ -90,6 +85,5 @@ DEPENDENCIES
   json
   mixlib-cli
   nagios_analyzer
-  rb-inotify
   spice!
   thin (= 1.2.8)
