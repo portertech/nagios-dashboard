@@ -24,16 +24,21 @@ $(document).ready(function(){
       
       $("#messages > tr:last").click(function() {
         $.fancybox({
-		  //'orig'			: $(this),
-		  'padding'		    : 5,
-          'content'         : '<strong>Plugin Output: </strong><pre>'
+          'padding': 5,
+          'content': '<strong>Long Plugin Output: </strong><pre>'
             +data[msg]['long_plugin_output']+'</pre><br />'
             +'<strong>Performance Data: </strong><pre>'+data[msg]['performance_data']+'</pre><br />'
-            +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre>',
-		  'title'   		: data[msg]['host_name'],
-		  'transitionIn'	: 'elastic',
-		  'transitionOut'	: 'elastic'
+            +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre><br />'
+            +'<div id="attributes"><a href="#" id="get-node-attributes">Get Node Attributes</a></div>',
+	      'title': data[msg]['host_name'],
+	      'transitionIn': 'elastic',
+	      'transitionOut': 'elastic'
 	    });
+      });
+      $("#get-node-attributes").click(function() {
+        $.getJSON('node/'+data[msg]['host_name'], function(attributes) {
+          $('#attributes').html("<strong>Instance ID: </strong><pre>"+attributes.name+"</pre><br /><strong>Public Hostname: </strong><pre>"+attributes.public_hostname+"</pre>");
+        });
       });
     };
   };
