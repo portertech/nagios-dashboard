@@ -7,7 +7,7 @@ $(document).ready(function(){
         roles += this + ' ';
       });
       $('#chef-attributes').html(
-        '<strong>Instance ID: </strong><pre>'+attributes['name']+'</pre><br />'
+        '<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
         +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre>'
         +'<strong>Roles: </strong><pre>'+roles+'</pre>'
       );
@@ -36,16 +36,19 @@ $(document).ready(function(){
       
       $("#messages > tr:last").click(function() {
         get_chef_attributes(data[msg]['host_name']);
+        var plugin_output = "";
+        if (data[msg]['long_plugin_output'] != null){
+          plugin_output = data[msg]['long_plugin_output'];
+        } else {
+          plugin_output = data[msg]['plugin_output'];
+        }         
         $.fancybox({
           'autoDimensions': false,
           'width': 700,
           'height': 420,
           'padding': 5,
-          'content': '<strong>Long Plugin Output: </strong><pre>'
-            +data[msg]['long_plugin_output']+'</pre><br />'
-            +'<strong>Performance Data: </strong><pre>'+data[msg]['performance_data']+'</pre><br />'
-            +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre><br />'
-            +'<div id="chef-attributes"></div>',
+          'content': '<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
+            +'<div id="chef-attributes"><strong>Querying Chef ...</strong></div>',
 	  'title': data[msg]['host_name'],
 	  'transitionIn': 'elastic',
 	  'transitionOut': 'elastic'
