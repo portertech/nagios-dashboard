@@ -2,13 +2,13 @@ $(document).ready(function(){
   function debug(str){ $("#debug").append("<p>" +  str); };
   function get_chef_attributes(hostname) {
     $.getJSON('node/'+hostname, function(attributes) {
-      var roles = null;
-      $.each(attributes['roles'], function() { 
+      var roles = "";
+      $.each(attributes['automatic']['roles'], function() {
         roles += this + ' ';
       });
       $('#chef-attributes').html(
         '<strong>Instance ID: </strong><pre>'+attributes['name']+'</pre><br />'
-        +'<strong>Public IP: </strong><pre>'+attributes['ec2']['public_ipv4']+'</pre>'
+        +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre>'
         +'<strong>Roles: </strong><pre>'+roles+'</pre>'
       );
     });
@@ -39,6 +39,7 @@ $(document).ready(function(){
         $.fancybox({
           'autoDimensions': false,
           'width': 700,
+          'height': 420,
           'padding': 5,
           'content': '<strong>Long Plugin Output: </strong><pre>'
             +data[msg]['long_plugin_output']+'</pre><br />'
