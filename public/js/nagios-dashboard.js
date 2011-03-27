@@ -8,7 +8,7 @@ $(document).ready(function(){
       });
       $('#chef-attributes').html(
         '<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
-        +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre>'
+        +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre><br />'
         +'<strong>Roles: </strong><pre>'+roles+'</pre>'
       );
     });
@@ -37,7 +37,7 @@ $(document).ready(function(){
       $("#messages > tr:last").click(function() {
         get_chef_attributes(data[msg]['host_name']);
         var plugin_output = "";
-        if (data[msg]['long_plugin_output'] != null){
+        if (data[msg]['long_plugin_output'] != ""){
           plugin_output = data[msg]['long_plugin_output'];
         } else {
           plugin_output = data[msg]['plugin_output'];
