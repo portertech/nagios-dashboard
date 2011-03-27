@@ -89,7 +89,7 @@ EventMachine.run do
 
     aget '/node/:hostname' do |hostname|
       content_type 'application/json'
-      EventMachine.defer(proc { Spice.connection.get('/search/node', :q => 'hostname:' + hostname).first }, proc{ |result| body result })
+      EventMachine.defer(proc { JSON.parse(Spice::Search.node({:q => 'hostname:' + hostname}))['rows'][0] }, proc { |result| body result.to_json })
     end
   end
 
@@ -136,4 +136,4 @@ EventMachine.run do
   Dashboard.run!({:port => OPTIONS.config[:port]})
 end
 
-@log.debug('stopping dashboard ...')
+Log.debug('stopping dashboard ...')
