@@ -38,7 +38,8 @@ class Options
   option :key,
     :short => '-k KEY',
     :long  => '--key KEY',
-    :description => 'OpsCode plaform user KEY (required)'
+    :default => '/etc/chef/client.pem',
+    :description => 'OpsCode plaform user KEY'
 
   option :organization,
     :short => '-o ORGANIZATION',
@@ -89,7 +90,7 @@ EventMachine.run do
 
     aget '/node/:hostname' do |hostname|
       content_type 'application/json'
-      EventMachine.defer(proc { JSON.parse(Spice::Search.search('node', 'hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
+      EventMachine.defer(proc { JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
     end
   end
 
