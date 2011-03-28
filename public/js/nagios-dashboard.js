@@ -7,7 +7,8 @@ $(document).ready(function(){
         roles += this + ' ';
       });
       $('#chef-attributes').html(
-        '<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
+        '<strong>Environment: </strong><pre>'+attributes['override']['app_environment']+'</pre><br />'
+        +'<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
         +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre><br />'
         +'<strong>Roles: </strong><pre>'+roles+'</pre>'
       );
