@@ -89,7 +89,7 @@ EventMachine.run do
 
     aget '/node/:hostname' do |hostname|
       content_type 'application/json'
-      EventMachine.defer(proc { JSON.parse(Spice::Search.node({:q => 'hostname:' + hostname}))['rows'][0] }, proc { |result| body result.to_json })
+      EventMachine.defer(proc { JSON.parse(Spice::Search.search('node', 'hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
     end
   end
 
