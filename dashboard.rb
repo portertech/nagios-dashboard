@@ -130,7 +130,7 @@ EventMachine.run do
     log_message('updated clients')
   end
 
-  EMDirWatcher.watch File.dirname(File.expand_path(OPTIONS.config[:datfile])), :include_only => ['status.dat'] do
+  EMDirWatcher.watch File.dirname(File.expand_path(OPTIONS.config[:datfile])), :include_only => ['status.dat'], :grace_period => 0.5 do
     EventMachine.defer(nagios_status, update_clients)
   end
 
