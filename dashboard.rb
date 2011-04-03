@@ -28,12 +28,19 @@ class Options
     :short => '-l FILE',
     :long  => '--logfile FILE',
     :default => File.dirname(__FILE__) + '/debug.log',
-    :description => 'Listen on a different PORT'
+    :description => 'Log to a different FILE'
+
+  option :chef,
+    :short => '-c',
+    :long  => '--chef',
+    :boolean => true,
+    :default => false,
+    :description => 'Enable OpsCode Chef platform integration'
 
   option :user,
     :short => '-u USER',
     :long  => '--user USER',
-    :description => 'OpsCode plaform USER (required)'
+    :description => 'OpsCode plaform USER'
 
   option :key,
     :short => '-k KEY',
@@ -44,7 +51,7 @@ class Options
   option :organization,
     :short => '-o ORGANIZATION',
     :long  => '--organization ORGANIZATION',
-    :description => 'OpsCode platform ORGANIZATION (required)'
+    :description => 'OpsCode platform ORGANIZATION'
 
   option :help,
     :short => "-h",
@@ -67,22 +74,23 @@ Log.init(OPTIONS.config[:logfile])
 Log.debug('starting dashboard ...')
 
 EventMachine.epoll if EventMachine.epoll?
-EventMachine.kqueue if EventMachine.kqueue?
 EventMachine.run do
   class Dashboard < Sinatra::Base
     register Sinatra::Async
     set :static, true
     set :public, 'public'
 
-    Spice.setup do |s|
-      s.host = "api.opscode.com"
-      s.port = 443
-      s.scheme = "https"
-      s.url_path = 'organizations/' + OPTIONS.config[:organization]
-      s.client_name = OPTIONS.config[:user]
-      s.key_file = OPTIONS.config[:key]
+    if OPTIONS.config[:chef]
+      Spice.setup do |s|
+        s.host = "api.opscode.com"
+        s.port = 443
+        s.scheme = "https"
+        s.url_path = 'organizations/' + OPTIONS.config[:organization]
+        s.client_name = OPTIONS.config[:user]
+        s.key_file = OPTIONS.config[:key]
+      end
+      Spice.connect!
     end
-    Spice.connect!
 
     aget '/' do
       EventMachine.defer(proc { haml :dashboard }, proc { |result| body result })
@@ -90,7 +98,11 @@ EventMachine.run do
 
     aget '/node/:hostname' do |hostname|
       content_type 'application/json'
-      EventMachine.defer(proc { JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
+      if OPTIONS.config[:chef]
+        EventMachine.defer(proc { JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
+      else
+        body nil
+      end
     end
   end
 

@@ -2,15 +2,19 @@ $(document).ready(function(){
   function debug(str){ $("#debug").append("<p>" +  str); };
   function get_chef_attributes(hostname) {
     $.getJSON('node/'+hostname, function(attributes) {
-      var roles = "";
-      $.each(attributes['automatic']['roles'], function() {
-        roles += this + ' ';
-      });
-      $('#chef-attributes').html(
-        '<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
-        +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre><br />'
-        +'<strong>Roles: </strong><pre>'+roles+'</pre>'
-      );
+      if (attributes == null) {
+        $('#chef-attributes').html('You have not enabled OpsCode Chef platform integration.');
+      } else {
+        var roles = "";
+        $.each(attributes['automatic']['roles'], function() {
+          roles += this + ' ';
+        });
+        $('#chef-attributes').html(
+          '<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
+          +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre><br />'
+          +'<strong>Roles: </strong><pre>'+roles+'</pre>'
+        );
+      }
     });
   }
   ws = new WebSocket("ws://" + location.hostname + ":9000");
