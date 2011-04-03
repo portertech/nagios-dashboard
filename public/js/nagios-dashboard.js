@@ -53,10 +53,10 @@ $(document).ready(function(){
           'padding': 5,
           'content': '<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
             +'<div id="chef-attributes"><strong>Querying Chef ...</strong></div>',
-	  'title': data[msg]['host_name'],
-	  'transitionIn': 'elastic',
-	  'transitionOut': 'elastic'
-	});
+          'title': data[msg]['host_name'],
+          'transitionIn': 'elastic',
+          'transitionOut': 'elastic'
+        });
       });
     };
   };
