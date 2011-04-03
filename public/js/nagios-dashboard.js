@@ -2,8 +2,8 @@ $(document).ready(function(){
   function debug(str){ $("#debug").append("<p>" +  str); };
   function get_chef_attributes(hostname) {
     $.getJSON('node/'+hostname, function(attributes) {
-      if (attributes == null) {
-        $('#chef-attributes').html('You have not enabled OpsCode Chef platform integration.');
+      if (attributes['name'] == null) {
+        $('#chef-attributes').empty();
       } else {
         var roles = "";
         $.each(attributes['automatic']['roles'], function() {

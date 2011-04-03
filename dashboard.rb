@@ -101,7 +101,8 @@ EventMachine.run do
       if OPTIONS.config[:chef]
         EventMachine.defer(proc { JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
       else
-        body nil
+        result = {:name => nil}
+        body result.to_json
       end
     end
   end
