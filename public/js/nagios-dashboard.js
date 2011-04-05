@@ -36,28 +36,26 @@ $(document).ready(function(){
         +'<div style="width:400px;height:100px;overflow:auto;">'
         +'</div></div>'
         +'</td><td>'+last_time_ok.toLocaleString()
-        +'</td><td>'+last_check.toLocaleString()+'</td></tr>');
-      
-      $("#messages > tr:last").click(function() {
-        get_chef_attributes(data[msg]['host_name']);
-        var plugin_output = "";
-        if (data[msg]['long_plugin_output'] != ""){
-          plugin_output = data[msg]['long_plugin_output'];
-        } else {
-          plugin_output = data[msg]['plugin_output'];
-        }         
-        $.fancybox({
-          'autoDimensions': false,
-          'width': 700,
-          'height': 420,
-          'padding': 5,
-          'content': '<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
-            +'<div id="chef-attributes"><strong>Querying Chef ...</strong></div>',
-          'title': data[msg]['host_name'],
-          'transitionIn': 'elastic',
-          'transitionOut': 'elastic'
+        +'</td><td>'+last_check.toLocaleString()+'</td></tr>').click(function() {
+          get_chef_attributes(data[msg]['host_name']);
+          var plugin_output = "";
+          if (data[msg]['long_plugin_output'] != ""){
+            plugin_output = data[msg]['long_plugin_output'];
+          } else {
+            plugin_output = data[msg]['plugin_output'];
+          }         
+          $.fancybox({
+            'autoDimensions': false,
+            'width': 700,
+            'height': 420,
+            'padding': 5,
+            'content': '<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
+              +'<div id="chef-attributes"><strong>Querying Chef ...</strong></div>',
+            'title': data[msg]['host_name'],
+            'transitionIn': 'elastic',
+            'transitionOut': 'elastic'
+          });
         });
-      });
     };
   };
   ws.onclose = function() { debug("socket closed"); };
