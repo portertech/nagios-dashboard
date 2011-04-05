@@ -23,7 +23,7 @@ $(document).ready(function(){
         +'</td><td>'+last_check.toLocaleString()+'</td></tr>').click(function() {
         $.fancybox({
 		  //'orig'			: $(this),
-		  'padding'		    : 0,
+		  'padding'		    : 5,
           'content'         : '<strong>Plugin Output: </strong><pre>'
             +data[msg]['long_plugin_output']+'</pre><br />'
             +'<strong>Performance Data: </strong><pre>'+data[msg]['performance_data']+'</pre><br />'
