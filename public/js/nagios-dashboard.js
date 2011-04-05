@@ -62,8 +62,8 @@ $(document).ready(function(){
            'height'         : 420,
            'padding'        : 5,
            'title'          : data[msg]['host_name'],
-           'transitionIn'   : 'elastic',
-           'transitionOut'  : 'elastic'
+           'transitionIn'   : 'fade',
+           'transitionOut'  : 'fade'
       });
       
       i++;
