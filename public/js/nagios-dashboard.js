@@ -1,5 +1,22 @@
 $(document).ready(function(){
   function debug(str){ $("#debug").append("<p>" +  str); };
+  function get_chef_attributes(hostname) {
+    $.getJSON('node/'+hostname, function(attributes) {
+      if (attributes['name'] == null) {
+        $('#chef-attributes').empty();
+      } else {
+        var roles = "";
+        $.each(attributes['automatic']['roles'], function() {
+          roles += this + ' ';
+        });
+        $('#chef-attributes').html(
+          '<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
+          +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre><br />'
+          +'<strong>Roles: </strong><pre>'+roles+'</pre>'
+        );
+      }
+    });
+  }
   ws = new WebSocket("ws://" + location.hostname + ":9000");
   ws.onmessage = function(evt) {
     $("#messages").empty();
@@ -20,23 +37,33 @@ $(document).ready(function(){
       $("#messages").append('<tr class="'+status+'" id="link_'+i+'" href="#popup_'+i+'"><td>'+data[msg]['host_name']
         +'</td><td>'+data[msg]['plugin_output']+'<div style="display: none;">'
         +'<div style="width:400px;height:100px;overflow:auto;">'
-        +
         +'</div></div>'
         +'</td><td>'+last_time_ok.toLocaleString()
-        +'</td><td>'+last_check.toLocaleString()+'</td></tr>');
-      
+        +'</td><td>'+last_check.toLocaleString()+'</td></tr>').click(function() {
+          get_chef_attributes(data[msg]['host_name'])
+        });
+
+      var plugin_output = '';
+      if (data[msg]['long_plugin_output'] != ''){
+        plugin_output = data[msg]['long_plugin_output'];
+      } else {
+        plugin_output = data[msg]['plugin_output'];
+      }
+
       $("#popups_container").append('<div id="popup_'+i+'">'
-      +'<strong>Plugin Output: </strong><pre>'
-      +data[msg]['long_plugin_output']+'</pre><br />'
-      +'<strong>Performance Data: </strong><pre>'+data[msg]['performance_data']+'</pre><br />'
       +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre>'
+      +'<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
+      +'<div id="chef-attributes"><strong>Querying Chef ...</strong></div>'
       +'</div>');
       
       $("#link_"+i).fancybox({
-           'title'         : data[msg]['host_name'],
-           'padding'       : 5,
-           'transitionIn'  : 'elastic',
-           'transitionOut' : 'elastic'
+           'autoDimensions' : false,
+           'width'          : 700,
+           'height'         : 420,
+           'padding'        : 5,
+           'title'          : data[msg]['host_name'],
+           'transitionIn'   : 'fade',
+           'transitionOut'  : 'fade'
       });
       
       i++;
