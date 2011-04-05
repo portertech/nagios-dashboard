@@ -20,9 +20,7 @@ $(document).ready(function(){
         +
         +'</div></div>'
         +'</td><td>'+last_time_ok.toLocaleString()
-        +'</td><td>'+last_check.toLocaleString()+'</td></tr>');
-      
-      $("#messages > tr:last").click(function() {
+        +'</td><td>'+last_check.toLocaleString()+'</td></tr>').click(function() {
         $.fancybox({
 		  //'orig'			: $(this),
 		  'padding'		    : 0,
