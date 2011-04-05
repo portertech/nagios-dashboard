@@ -21,7 +21,10 @@ $(document).ready(function(){
   ws.onmessage = function(evt) {
     $("#messages").empty();
     data = JSON.parse(evt.data);
+    var i = 0;
+    
     for(var msg in data) {
+
       var status = '';
       if(data[msg]['status'] == 'CRITICAL') {
         status = "Critical";
@@ -31,31 +34,39 @@ $(document).ready(function(){
       var last_time_ok = new Date(data[msg]['last_time_ok'] * 1000);
       var last_check = new Date(data[msg]['last_check'] * 1000);
       
-      $("#messages").append('<tr class="'+status+'"><td>'+data[msg]['host_name']
+      $("#messages").append('<tr class="'+status+'" id="link_'+i+'" href="#popup_'+i+'"><td>'+data[msg]['host_name']
         +'</td><td>'+data[msg]['plugin_output']+'<div style="display: none;">'
         +'<div style="width:400px;height:100px;overflow:auto;">'
         +'</div></div>'
         +'</td><td>'+last_time_ok.toLocaleString()
         +'</td><td>'+last_check.toLocaleString()+'</td></tr>').click(function() {
-          get_chef_attributes(data[msg]['host_name']);
-          var plugin_output = "";
-          if (data[msg]['long_plugin_output'] != ""){
-            plugin_output = data[msg]['long_plugin_output'];
-          } else {
-            plugin_output = data[msg]['plugin_output'];
-          }         
-          $.fancybox({
-            'autoDimensions': false,
-            'width': 700,
-            'height': 420,
-            'padding': 5,
-            'content': '<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
-              +'<div id="chef-attributes"><strong>Querying Chef ...</strong></div>',
-            'title': data[msg]['host_name'],
-            'transitionIn': 'elastic',
-            'transitionOut': 'elastic'
-          });
+          get_chef_attributes(data[msg]['host_name'])
         });
+
+      var plugin_output = '';
+      if (data[msg]['long_plugin_output'] != ''){
+        plugin_output = data[msg]['long_plugin_output'];
+      } else {
+        plugin_output = data[msg]['plugin_output'];
+      }
+
+      $("#popups_container").append('<div id="popup_'+i+'">'
+      +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre>'
+      +'<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
+      +'<div id="chef-attributes"><strong>Querying Chef ...</strong></div>'
+      +'</div>');
+      
+      $("#link_"+i).fancybox({
+           'autoDimensions' : false,
+           'width'          : 700,
+           'height'         : 420,
+           'padding'        : 5,
+           'title'          : data[msg]['host_name'],
+           'transitionIn'   : 'elastic',
+           'transitionOut'  : 'elastic'
+      });
+      
+      i++;
     };
   };
   ws.onclose = function() { debug("socket closed"); };
