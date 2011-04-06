@@ -30,17 +30,10 @@ class Options
     :default => File.dirname(__FILE__) + '/debug.log',
     :description => 'Log to a different FILE'
 
-  option :chef,
-    :short => '-c',
-    :long  => '--chef',
-    :boolean => true,
-    :default => false,
-    :description => 'Enable OpsCode Chef platform integration'
-
   option :user,
     :short => '-u USER',
     :long  => '--user USER',
-    :description => 'OpsCode plaform USER'
+    :description => 'OpsCode plaform USER (required)'
 
   option :key,
     :short => '-k KEY',
@@ -51,7 +44,7 @@ class Options
   option :organization,
     :short => '-o ORGANIZATION',
     :long  => '--organization ORGANIZATION',
-    :description => 'OpsCode platform ORGANIZATION'
+    :description => 'OpsCode platform ORGANIZATION (required)'
 
   option :help,
     :short => "-h",
@@ -80,17 +73,15 @@ EventMachine.run do
     set :static, true
     set :public, 'public'
 
-    if OPTIONS.config[:chef]
-      Spice.setup do |s|
-        s.host = "api.opscode.com"
-        s.port = 443
-        s.scheme = "https"
-        s.url_path = 'organizations/' + OPTIONS.config[:organization]
-        s.client_name = OPTIONS.config[:user]
-        s.key_file = OPTIONS.config[:key]
-      end
-      Spice.connect!
+    Spice.setup do |s|
+      s.host = "api.opscode.com"
+      s.port = 443
+      s.scheme = "https"
+      s.url_path = 'organizations/' + OPTIONS.config[:organization]
+      s.client_name = OPTIONS.config[:user]
+      s.key_file = OPTIONS.config[:key]
     end
+    Spice.connect!
 
     aget '/' do
       EventMachine.defer(proc { haml :dashboard }, proc { |result| body result })
@@ -98,12 +89,7 @@ EventMachine.run do
 
     aget '/node/:hostname' do |hostname|
       content_type 'application/json'
-      if OPTIONS.config[:chef]
-        EventMachine.defer(proc { JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
-      else
-        result = {:name => nil}
-        body result.to_json
-      end
+      EventMachine.defer(proc { JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
     end
   end
 
