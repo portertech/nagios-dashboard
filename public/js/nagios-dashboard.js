@@ -3,13 +3,13 @@ $(document).ready(function(){
   function get_chef_attributes(hostname) {
     $.getJSON('node/'+hostname, function(attributes) {
       if (attributes['name'] == null) {
-        $('#chef-attributes').empty();
+        $('#chef_attributes').empty();
       } else {
-        var roles = "";
+        var roles = '';
         $.each(attributes['automatic']['roles'], function() {
           roles += this + ' ';
         });
-        $('#chef-attributes').html(
+        $('#chef_attributes').html(
           '<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
           +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre><br />'
           +'<strong>Roles: </strong><pre>'+roles+'</pre>'
@@ -45,7 +45,7 @@ $(document).ready(function(){
         });
 
       var plugin_output = '';
-      if (data[msg]['long_plugin_output'] != ''){
+      if (data[msg]['long_plugin_output'] != '') {
         plugin_output = data[msg]['long_plugin_output'];
       } else {
         plugin_output = data[msg]['plugin_output'];
@@ -54,7 +54,7 @@ $(document).ready(function(){
       $("#popups_container").append('<div id="popup_'+i+'">'
       +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre>'
       +'<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
-      +'<div id="chef-attributes"><strong>Querying Chef ...</strong></div>'
+      +'<div id="chef_attributes">Querying Chef ...</div>'
       +'</div>');
       
       $("#link_"+i).fancybox({
