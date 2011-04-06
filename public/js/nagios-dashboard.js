@@ -20,6 +20,7 @@ $(document).ready(function(){
   ws = new WebSocket("ws://" + location.hostname + ":9000");
   ws.onmessage = function(evt) {
     $("#messages").empty();
+    $("#popups_container").empty();
     data = JSON.parse(evt.data);
     var i = 0;
     
