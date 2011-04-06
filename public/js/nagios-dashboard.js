@@ -3,7 +3,7 @@ $(document).ready(function(){
     function get_chef_attributes(popup, hostname) {
     $.getJSON('node/'+hostname, function(attributes) {
       if (attributes['name'] == null) {
-        $('#chef_attributes').empty();
+        $('#chef_attributes').parent("#fancybox-content").empty();
       } else {
         var roles = '';
         $.each(attributes['automatic']['roles'], function() {
@@ -49,7 +49,7 @@ $(document).ready(function(){
       }
 
       $("#popups_container").append('<div id="popup_'+msg+'">'
-      +'<div id="hostname" style="display: none;">data[msg]['host_name']</div>'
+      +'<div id="hostname" style="display: none;">'+data[msg]['host_name']+'</div>'
       +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre>'
       +'<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
       +'<div id="chef_attributes">Querying Chef ...</div>'
@@ -63,7 +63,7 @@ $(document).ready(function(){
            'title'          : data[msg]['host_name'],
            'transitionIn'   : 'fade',
            'transitionOut'  : 'fade',
-           'onStart'        : function() { get_chef_attributes($("hostname").parent("#fancybox-content").html()) }
+          'onStart'        : function() { get_chef_attributes($("#hostname").parent("#fancybox-content").html()); }
       });
     };
   };
