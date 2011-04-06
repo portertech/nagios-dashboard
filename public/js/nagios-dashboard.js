@@ -1,6 +1,6 @@
 $(document).ready(function(){
   function debug(str){ $("#debug").append("<p>" +  str); };
-    function get_chef_attributes(popup, hostname) {
+    function get_chef_attributes(hostname) {
     $.getJSON('node/'+hostname, function(attributes) {
       if (attributes['name'] == null) {
         $('#chef_attributes').parent("#fancybox-content").empty();
