@@ -28,22 +28,28 @@ class Options
     :short => '-l FILE',
     :long  => '--logfile FILE',
     :default => File.dirname(__FILE__) + '/debug.log',
-    :description => 'Listen on a different PORT'
+    :description => 'Log to a different FILE'
+
+  option :chef,
+    :short => '-c SERVER',
+    :long  => '--chef SERVER',
+    :description => 'Use a Chef SERVER'
 
   option :user,
     :short => '-u USER',
     :long  => '--user USER',
-    :description => 'OpsCode plaform USER (required)'
+    :description => 'Chef USER name'
 
   option :key,
     :short => '-k KEY',
     :long  => '--key KEY',
-    :description => 'OpsCode plaform user KEY (required)'
+    :default => '/etc/chef/client.pem',
+    :description => 'Chef user KEY'
 
   option :organization,
     :short => '-o ORGANIZATION',
     :long  => '--organization ORGANIZATION',
-    :description => 'OpsCode platform ORGANIZATION (required)'
+    :description => 'Use a OpsCode platform ORGANIZATION'
 
   option :help,
     :short => "-h",
@@ -66,7 +72,6 @@ Log.init(OPTIONS.config[:logfile])
 Log.debug('starting dashboard ...')
 
 EventMachine.epoll if EventMachine.epoll?
-EventMachine.kqueue if EventMachine.kqueue?
 EventMachine.run do
   class Dashboard < Sinatra::Base
     register Sinatra::Async
@@ -74,10 +79,10 @@ EventMachine.run do
     set :public, 'public'
 
     Spice.setup do |s|
-      s.host = "api.opscode.com"
+      s.host = OPTIONS.config[:chef] || "api.opscode.com"
       s.port = 443
       s.scheme = "https"
-      s.url_path = 'organizations/' + OPTIONS.config[:organization]
+      s.url_path = 'organizations/' + OPTIONS.config[:organization] if OPTIONS.config[:chef].nil?
       s.client_name = OPTIONS.config[:user]
       s.key_file = OPTIONS.config[:key]
     end
@@ -89,7 +94,7 @@ EventMachine.run do
 
     aget '/node/:hostname' do |hostname|
       content_type 'application/json'
-      EventMachine.defer(proc { JSON.parse(Spice::Search.search('node', 'hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
+      EventMachine.defer(proc { JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
     end
   end
 
@@ -115,7 +120,6 @@ EventMachine.run do
   nagios_status = proc do
     begin
       nagios = NagiosAnalyzer::Status.new(OPTIONS.config[:datfile])
-      log_message('parsed nagios status.dat')
       nagios.items.to_json
     rescue => error
       log_message(error)
@@ -126,10 +130,10 @@ EventMachine.run do
     websocket_connections.each do |websocket|
       websocket.send nagios
     end
-    log_message('updated clients')
+    log_message('updated clients') if websocket_connections.count > 0
   end
 
-  EMDirWatcher.watch File.dirname(File.expand_path(OPTIONS.config[:datfile])), :include_only => ['status.dat'] do
+  EMDirWatcher.watch File.dirname(File.expand_path(OPTIONS.config[:datfile])), :include_only => ['status.dat'], :grace_period => 0.5 do
     EventMachine.defer(nagios_status, update_clients)
   end
 

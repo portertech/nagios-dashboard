@@ -1,8 +1,7 @@
 $(document).ready(function(){
-  function debug(str){ $("#debug").append("<p>" +  str); };
   function get_chef_attributes(hostname) {
     $.getJSON('node/'+hostname, function(attributes) {
-      var roles = "";
+      var roles = '';
       $.each(attributes['automatic']['roles'], function() {
         roles += this + ' ';
       });
@@ -17,6 +16,7 @@ $(document).ready(function(){
   ws = new WebSocket("ws://" + location.hostname + ":9000");
   ws.onmessage = function(evt) {
     $("#messages").empty();
+    $("#popups_container").empty();
     data = JSON.parse(evt.data);
     for(var msg in data) {
       var status = '';
@@ -27,38 +27,34 @@ $(document).ready(function(){
       }
       var last_time_ok = new Date(data[msg]['last_time_ok'] * 1000);
       var last_check = new Date(data[msg]['last_check'] * 1000);
-      
-      $("#messages").append('<tr class="'+status+'"><td>'+data[msg]['host_name']
+      $("#messages").append('<tr class="'+status+'" id="link_'+msg+'" href="#popup_'+msg+'"><td>'+data[msg]['host_name']
         +'</td><td>'+data[msg]['plugin_output']+'<div style="display: none;">'
         +'<div style="width:400px;height:100px;overflow:auto;">'
         +'</div></div>'
         +'</td><td>'+last_time_ok.toLocaleString()
         +'</td><td>'+last_check.toLocaleString()+'</td></tr>');
-      
-      $("#messages > tr:last").click(function() {
-        get_chef_attributes(data[msg]['host_name']);
-        var plugin_output = "";
-        if (data[msg]['long_plugin_output'] != ""){
-          plugin_output = data[msg]['long_plugin_output'];
-        } else {
-          plugin_output = data[msg]['plugin_output'];
-        }         
-        $.fancybox({
-          'autoDimensions': false,
-          'width': 700,
-          'height': 420,
-          'padding': 5,
-          'content': '<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
-            +'<div id="chef-attributes"><strong>Querying Chef ...</strong></div>',
-	  'title': data[msg]['host_name'],
-	  'transitionIn': 'elastic',
-	  'transitionOut': 'elastic'
-	});
+      var plugin_output = '';
+      if (data[msg]['long_plugin_output'] != '') {
+        plugin_output = data[msg]['long_plugin_output'];
+      } else {
+        plugin_output = data[msg]['plugin_output'];
+      }
+      $("#popups_container").append('<div id="popup_'+msg+'">'
+        +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre><br />'
+        +'<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
+        +'<div class="chef_attributes">Querying Chef ...</div>'
+        +'</div>');
+      $("#link_"+msg).fancybox({
+        'autoDimensions' : false,
+        'width'          : 700,
+        'height'         : 420,
+        'padding'        : 5,
+        'title'          : data[msg]['host_name'],
+        'transitionIn'   : 'fade',
+        'transitionOut'  : 'fade',
+        'onComplete'     : function() { get_chef_attributes($("#fancybox-title-float-main").html()); },
+        'onClosed'       : function() { $('.chef_attributes').html('Querying Chef ...'); }
       });
     };
-  };
-  ws.onclose = function() { debug("socket closed"); };
-  ws.onopen = function() {
-    debug("connected...");
   };
 });
