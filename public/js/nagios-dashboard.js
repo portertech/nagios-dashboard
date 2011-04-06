@@ -1,15 +1,15 @@
 $(document).ready(function(){
   function debug(str){ $("#debug").append("<p>" +  str); };
-  function get_chef_attributes(hostname) {
+    function get_chef_attributes(popup, hostname) {
     $.getJSON('node/'+hostname, function(attributes) {
       if (attributes['name'] == null) {
-        $('#chef_attributes').empty();
+        $('#chef_attributes_'+popup).empty();
       } else {
         var roles = '';
         $.each(attributes['automatic']['roles'], function() {
           roles += this + ' ';
         });
-        $('#chef_attributes').html(
+        $('#chef_attributes_'+popup).html(
           '<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
           +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre><br />'
           +'<strong>Roles: </strong><pre>'+roles+'</pre>'
@@ -22,7 +22,6 @@ $(document).ready(function(){
     $("#messages").empty();
     $("#popups_container").empty();
     data = JSON.parse(evt.data);
-    var i = 0;
     
     for(var msg in data) {
 
@@ -35,15 +34,13 @@ $(document).ready(function(){
       var last_time_ok = new Date(data[msg]['last_time_ok'] * 1000);
       var last_check = new Date(data[msg]['last_check'] * 1000);
       
-      $("#messages").append('<tr class="'+status+'" id="link_'+i+'" href="#popup_'+i+'"><td>'+data[msg]['host_name']
+      $("#messages").append('<tr class="'+status+'" id="link_'+msg+'" href="#popup_'+msg+'"><td>'+data[msg]['host_name']
         +'</td><td>'+data[msg]['plugin_output']+'<div style="display: none;">'
         +'<div style="width:400px;height:100px;overflow:auto;">'
         +'</div></div>'
         +'</td><td>'+last_time_ok.toLocaleString()
-        +'</td><td>'+last_check.toLocaleString()+'</td></tr>').click(function() {
-          get_chef_attributes(data[msg]['host_name'])
-        });
-
+        +'</td><td>'+last_check.toLocaleString()+'</td></tr>');
+  
       var plugin_output = '';
       if (data[msg]['long_plugin_output'] != '') {
         plugin_output = data[msg]['long_plugin_output'];
@@ -51,23 +48,22 @@ $(document).ready(function(){
         plugin_output = data[msg]['plugin_output'];
       }
 
-      $("#popups_container").append('<div id="popup_'+i+'">'
+      $("#popups_container").append('<div id="popup_'+msg+'">'
       +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre>'
       +'<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
-      +'<div id="chef_attributes">Querying Chef ...</div>'
+      +'<div id="chef_attributes_'+msg+'">Querying Chef ...</div>'
       +'</div>');
       
-      $("#link_"+i).fancybox({
+      $("#link_"+msg).fancybox({
            'autoDimensions' : false,
            'width'          : 700,
            'height'         : 420,
            'padding'        : 5,
            'title'          : data[msg]['host_name'],
            'transitionIn'   : 'fade',
-           'transitionOut'  : 'fade'
+           'transitionOut'  : 'fade',
+           'onComplete'     : get_chef_attributes(msg, data[msg]['host_name'])
       });
-      
-      i++;
     };
   };
   ws.onclose = function() { debug("socket closed"); };
