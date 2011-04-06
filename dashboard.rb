@@ -120,7 +120,6 @@ EventMachine.run do
   nagios_status = proc do
     begin
       nagios = NagiosAnalyzer::Status.new(OPTIONS.config[:datfile])
-      log_message('parsed nagios status.dat')
       nagios.items.to_json
     rescue => error
       log_message(error)
@@ -131,7 +130,7 @@ EventMachine.run do
     websocket_connections.each do |websocket|
       websocket.send nagios
     end
-    log_message('updated clients')
+    log_message('updated clients') if websocket_connections.count > 0
   end
 
   EMDirWatcher.watch File.dirname(File.expand_path(OPTIONS.config[:datfile])), :include_only => ['status.dat'], :grace_period => 0.5 do
