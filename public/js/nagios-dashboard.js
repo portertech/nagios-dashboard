@@ -1,6 +1,6 @@
 $(document).ready(function(){
   function debug(str){ $("#debug").append("<p>" +  str); };
-    function get_chef_attributes(hostname) {
+  function get_chef_attributes(hostname) {
     $.getJSON('node/'+hostname, function(attributes) {
       if (attributes['name'] == null) {
         $('.chef_attributes').empty();
@@ -62,8 +62,10 @@ $(document).ready(function(){
         'title'          : data[msg]['host_name'],
         'transitionIn'   : 'fade',
         'transitionOut'  : 'fade',
-        'onComplete'     : function() { get_chef_attributes($("#fancybox-title-float-main").html()); }
+        'onComplete'     : function() { get_chef_attributes($("#fancybox-title-float-main").html()); },
+        'onClosed'       : function() { $('.chef_attributes').html('Querying Chef ...'); }
       });
+
     };
   };
   ws.onclose = function() { debug("socket closed"); };
