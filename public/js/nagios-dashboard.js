@@ -62,7 +62,7 @@ $(document).ready(function(){
            'title'          : data[msg]['host_name'],
            'transitionIn'   : 'fade',
            'transitionOut'  : 'fade',
-           'onStart'        : get_chef_attributes(msg, data[msg]['host_name'])
+           'onStart'        : function() { get_chef_attributes(msg, data[msg]['host_name']) }
       });
     };
   };
