@@ -30,21 +30,26 @@ class Options
     :default => File.dirname(__FILE__) + '/debug.log',
     :description => 'Log to a different FILE'
 
+  option :chef,
+    :short => '-c SERVER',
+    :long  => '--chef SERVER',
+    :description => 'Use a Chef SERVER'
+
   option :user,
     :short => '-u USER',
     :long  => '--user USER',
-    :description => 'OpsCode plaform USER (required)'
+    :description => 'Chef USER name'
 
   option :key,
     :short => '-k KEY',
     :long  => '--key KEY',
     :default => '/etc/chef/client.pem',
-    :description => 'OpsCode plaform user KEY'
+    :description => 'Chef user KEY'
 
   option :organization,
     :short => '-o ORGANIZATION',
     :long  => '--organization ORGANIZATION',
-    :description => 'OpsCode platform ORGANIZATION (required)'
+    :description => 'Use a OpsCode platform ORGANIZATION'
 
   option :help,
     :short => "-h",
@@ -74,10 +79,10 @@ EventMachine.run do
     set :public, 'public'
 
     Spice.setup do |s|
-      s.host = "api.opscode.com"
+      s.host = OPTIONS.config[:chef] || "api.opscode.com"
       s.port = 443
       s.scheme = "https"
-      s.url_path = 'organizations/' + OPTIONS.config[:organization]
+      s.url_path = 'organizations/' + OPTIONS.config[:organization] if OPTIONS.config[:chef].nil?
       s.client_name = OPTIONS.config[:user]
       s.key_file = OPTIONS.config[:key]
     end
