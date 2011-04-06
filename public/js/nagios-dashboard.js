@@ -62,7 +62,7 @@ $(document).ready(function(){
         'title'          : data[msg]['host_name'],
         'transitionIn'   : 'fade',
         'transitionOut'  : 'fade',
-        'onStart'        : function() { get_chef_attributes($("#fancybox-title-float-main").html()); }
+        'onComplete'     : function() { get_chef_attributes($("#fancybox-title-float-main").html()); }
       });
     };
   };
