@@ -3,13 +3,13 @@ $(document).ready(function(){
     function get_chef_attributes(hostname) {
     $.getJSON('node/'+hostname, function(attributes) {
       if (attributes['name'] == null) {
-        $('#chef_attributes').parent("#fancybox-content").empty();
+        $('.chef_attributes').empty();
       } else {
         var roles = '';
         $.each(attributes['automatic']['roles'], function() {
           roles += this + ' ';
         });
-        $('#chef_attributes').parent("#fancybox-content").html(
+        $('.chef_attributes').html(
           '<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
           +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre><br />'
           +'<strong>Roles: </strong><pre>'+roles+'</pre>'
@@ -49,21 +49,20 @@ $(document).ready(function(){
       }
 
       $("#popups_container").append('<div id="popup_'+msg+'">'
-      +'<div id="hostname" style="display: none;">'+data[msg]['host_name']+'</div>'
-      +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre>'
-      +'<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
-      +'<div id="chef_attributes">Querying Chef ...</div>'
-      +'</div>');
+        +'<strong>Check Command: </strong><pre>'+data[msg]['check_command']+'</pre>'
+        +'<strong>Plugin Output: </strong><pre>'+plugin_output+'</pre><br />'
+        +'<div class="chef_attributes">Querying Chef ...</div>'
+        +'</div>');
       
       $("#link_"+msg).fancybox({
-           'autoDimensions' : false,
-           'width'          : 700,
-           'height'         : 420,
-           'padding'        : 5,
-           'title'          : data[msg]['host_name'],
-           'transitionIn'   : 'fade',
-           'transitionOut'  : 'fade',
-          'onStart'        : function() { get_chef_attributes($("#hostname").parent("#fancybox-content").html()); }
+        'autoDimensions' : false,
+        'width'          : 700,
+        'height'         : 420,
+        'padding'        : 5,
+        'title'          : data[msg]['host_name'],
+        'transitionIn'   : 'fade',
+        'transitionOut'  : 'fade',
+        'onStart'        : function() { get_chef_attributes($("#fancybox-title-float-main").html()); }
       });
     };
   };
