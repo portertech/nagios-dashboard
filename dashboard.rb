@@ -103,6 +103,7 @@ EventMachine.run do
         env = ""
         nodes.each do |node|
           env += "define host {\n"
+          env += "  use server\n"
           env += "  address #{node['automatic']['ipaddress']}\n"
           env += "  host_name #{node['automatic']['hostname']}\n"
           if node['automatic'].include? 'roles'
