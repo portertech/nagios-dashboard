@@ -105,7 +105,7 @@ EventMachine.run do
           env += "define host {\n"
           env += "  use server\n"
           env += "  address #{node['automatic']['ipaddress']}\n"
-          env += "  host_name #{node['automatic']['hostname']}\n"
+          env += "  host_name #{node['override']['app_environment']}_#{node['automatic']['hostname']}\n"
           if node['automatic'].include? 'roles'
             env += "  hostgroups #{node['automatic']['roles'].to_a.join(',')}\n"
             if node['automatic']['roles'].include? 'spot'
