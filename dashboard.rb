@@ -99,28 +99,28 @@ EventMachine.run do
 
     apost '/nagios/hosts' do
       receive_json = proc do
-        nodes = JSON.parse(request.env["rack.input"].read)
+        nodes = JSON.parse(request.body.read)
         env = ""
         nodes.each do |node|
           env += "define host {\n"
-          env += "  address #{node['ipaddress']}\n"
-          env += "  host_name #{node['hostname']}\n"
-          if node.has_key? :roles
-            env += "  hostgroups #{node.roles.to_a.join(',')}\n"
-            if node.roles.include? 'spot'
+          env += "  address #{node['automatic']['ipaddress']}\n"
+          env += "  host_name #{node['automatic']['hostname']}\n"
+          if node['automatic'].include? 'roles'
+            env += "  hostgroups #{node['automatic']['roles'].to_a.join(',')}\n"
+            if node['automatic']['roles'].include? 'spot'
               env += "  notifications_enabled 0\n"
             end
-          else
-            env += "  hostgroups #{node.run_list.roles.to_a.join(',')}\n"
           end
           env += "}\n\n"
         end
         node = nodes.first
-        nagios_config = "/etc/nagios3/conf.d/#{node[:app_environment]}_hosts.cfg"
+        nagios_config = "/etc/nagios3/conf.d/#{node['override']['app_environment']}_hosts.cfg"
         old_env = ""
-        File.open(nagios_config, "r") do |file|
-          file.each_line do |line|
-            old_env += line
+        if File.exists?(nagios_config)
+          File.open(nagios_config, "r") do |file|
+            file.each_line do |line|
+              old_env += line
+            end
           end
         end
         unless env == old_env
@@ -129,7 +129,7 @@ EventMachine.run do
           end
           `/etc/init.d/nagios3 restart`
         end
-        "Successfully updated the Nagios host list for '#{node[:app_environment]}'"
+        "Successfully updated the Nagios host list for '#{node['override'][:app_environment]}'"
       end
       EventMachine.defer(receive_json, proc { |result| body result })
     end
