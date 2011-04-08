@@ -107,11 +107,11 @@ EventMachine.run do
           env += "  host_name #{node['hostname']}\n"
           if node.has_key? :roles
             env += "  hostgroups #{node.roles.to_a.join(',')}\n"
+            if node.roles.include? 'spot'
+              env += "  notifications_enabled 0\n"
+            end
           else
             env += "  hostgroups #{node.run_list.roles.to_a.join(',')}\n"
-          end
-          if node.roles.include? 'spot'
-            env += "  notifications_enabled 0\n"
           end
           env += "}\n\n"
         end
