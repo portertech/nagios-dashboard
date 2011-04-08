@@ -96,6 +96,43 @@ EventMachine.run do
       content_type 'application/json'
       EventMachine.defer(proc { JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
     end
+
+    apost '/nagios/hosts' do
+      receive_json = proc do
+        nodes = JSON.parse(request.env["rack.input"].read)
+        env = ""
+        nodes.each do |node|
+          env += "define host {\n"
+          env += "  address #{node['ipaddress']}\n"
+          env += "  host_name #{node['hostname']}\n"
+          if node.has_key? :roles
+            env += "  hostgroups #{node.roles.to_a.join(',')}\n"
+          else
+            env += "  hostgroups #{node.run_list.roles.to_a.join(',')}\n"
+          end
+          if node.roles.include? 'spot'
+            env += "  notifications_enabled 0\n"
+          end
+          env += "}\n\n"
+        end
+        node = nodes.first
+        nagios_config = "/etc/nagios3/conf.d/#{node[:app_environment]}_hosts.cfg"
+        old_env = ""
+        File.open(nagios_config, "r") do |file|
+          file.each_line do |line|
+            old_env += line
+          end
+        end
+        unless env == old_env
+          File.open(nagios_config, "w") do |file|
+            file.write(env)
+          end
+          `/etc/init.d/nagios3 restart`
+        end
+        "Successfully updated the Nagios host list for '#{node[:app_environment]}'"
+      end
+      EventMachine.defer(receive_json, proc { |result| body result })
+    end
   end
 
   def log_message(message)
