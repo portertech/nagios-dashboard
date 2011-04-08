@@ -130,7 +130,7 @@ EventMachine.run do
           end
           `/etc/init.d/nagios3 restart`
         end
-        "Successfully updated the Nagios host list for '#{node['override'][:app_environment]}'"
+        "Successfully updated the Nagios host list for '#{node['override']['app_environment']}'"
       end
       EventMachine.defer(receive_json, proc { |result| body result })
     end
