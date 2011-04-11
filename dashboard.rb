@@ -30,11 +30,6 @@ class Options
     :default => File.dirname(__FILE__) + '/debug.log',
     :description => 'Log to a different FILE'
 
-  option :chef,
-    :short => '-c SERVER',
-    :long  => '--chef SERVER',
-    :description => 'Use a Chef SERVER'
-
   option :user,
     :short => '-u USER',
     :long  => '--user USER',
@@ -45,11 +40,6 @@ class Options
     :long  => '--key KEY',
     :default => '/etc/chef/client.pem',
     :description => 'Chef user KEY'
-
-  option :organization,
-    :short => '-o ORGANIZATION',
-    :long  => '--organization ORGANIZATION',
-    :description => 'Use a OpsCode platform ORGANIZATION'
 
   option :help,
     :short => "-h",
@@ -78,23 +68,26 @@ EventMachine.run do
     set :static, true
     set :public, 'public'
 
-    Spice.setup do |s|
-      s.host = OPTIONS.config[:chef] || "api.opscode.com"
-      s.port = 443
-      s.scheme = "https"
-      s.url_path = 'organizations/' + OPTIONS.config[:organization] if OPTIONS.config[:chef].nil?
-      s.client_name = OPTIONS.config[:user]
-      s.key_file = OPTIONS.config[:key]
-    end
-    Spice.connect!
-
     aget '/' do
       EventMachine.defer(proc { haml :dashboard }, proc { |result| body result })
     end
 
     aget '/node/:hostname' do |hostname|
       content_type 'application/json'
-      EventMachine.defer(proc { JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0] }, proc { |result| body result.to_json })
+      get_chef_attributes = proc do
+        env = hostname.split(/_/).first
+        Spice.setup do |s|
+          s.host = 'api.opscode.com'
+          s.port = 443
+          s.scheme = 'https'
+          s.url_path = 'organizations/' + env
+          s.client_name = OPTIONS.config[:user]
+          s.key_file = OPTIONS.config[:key]
+        end
+        Spice.connect!
+        JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0]
+      end
+      EventMachine.defer(get_chef_attributes, proc { |result| body result.to_json })
     end
 
     apost '/nagios/hosts' do
