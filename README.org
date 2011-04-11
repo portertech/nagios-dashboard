@@ -26,11 +26,9 @@
 * Run
   : -> % ./dashboard -h
   : Usage: ./dashboard.rb (options)
-  :     -c, --chef SERVER                Use a Chef SERVER
   :     -d, --datfile FILE               Location of Nagios status.dat FILE
   :     -k, --key KEY                    Chef user KEY
   :     -l, --logfile FILE               Log to a different FILE
-  :     -o, --organization ORGANIZATION  Use a OpsCode platform ORGANIZATION
   :     -p, --port PORT                  Listen on a different PORT
   :     -u, --user USER                  Chef USER name
   :     -v, --verbose                    Output debug messages to screen
