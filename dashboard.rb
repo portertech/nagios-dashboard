@@ -68,6 +68,15 @@ EventMachine.run do
     set :static, true
     set :public, 'public'
 
+    Spice.setup do |s|
+      s.host = 'api.opscode.com'
+      s.port = 443
+      s.scheme = 'https'
+      s.client_name = OPTIONS.config[:user]
+      s.key_file = OPTIONS.config[:key]
+    end
+    Spice.connect!
+
     aget '/' do
       EventMachine.defer(proc { haml :dashboard }, proc { |result| body result })
     end
@@ -78,16 +87,7 @@ EventMachine.run do
         split = hostname.split(/_/)
         env = split.first
         hostname = split.last
-        Spice.setup do |s|
-          s.host = 'api.opscode.com'
-          s.port = 443
-          s.scheme = 'https'
-          s.url_path = 'organizations/sonian-' + env
-          s.client_name = OPTIONS.config[:user]
-          s.key_file = OPTIONS.config[:key]
-        end
-        Spice.connect!
-        JSON.parse(Spice::Search.node('hostname:' + hostname))['rows'][0]
+        JSON.parse(Spice.connection.get("organizations/sonian-#{env}/search/node", :params => {:q => "hostname:#{hostname}"}))['rows'][0]
       end
       EventMachine.defer(get_chef_attributes, proc { |result| body result.to_json })
     end
