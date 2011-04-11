@@ -80,7 +80,7 @@ EventMachine.run do
           s.host = 'api.opscode.com'
           s.port = 443
           s.scheme = 'https'
-          s.url_path = 'organizations/' + env
+          s.url_path = 'organizations/sonian-' + env
           s.client_name = OPTIONS.config[:user]
           s.key_file = OPTIONS.config[:key]
         end
