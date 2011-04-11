@@ -75,7 +75,9 @@ EventMachine.run do
     aget '/node/:hostname' do |hostname|
       content_type 'application/json'
       get_chef_attributes = proc do
-        env = hostname.split(/_/).first
+        split = hostname.split(/_/)
+        env = split.first
+        hostname = split.last
         Spice.setup do |s|
           s.host = 'api.opscode.com'
           s.port = 443
