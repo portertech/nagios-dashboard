@@ -1,35 +1,37 @@
-#+TITLE: A Nagios dashboard using Ruby EventMachine & HTML5 WebSockets
+#+TITLE: A Nagios dashboard with OpsCode Chef integration.
 #+Options: num:nil
 #+STARTUP: odd
 #+Style: <style> h1,h2,h3 {font-family: arial, helvetica, sans-serif} </style>
 
 * How It Works
-  Nagios-Dashboard parses the nagios status.dat file & sends the current status to clients via an HTML5 WebSocket
+  Nagios-Dashboard parses the nagios status.dat file & sends the current status to clients via an HTML5 WebSocket.
 
-  The dashboard monitors the status.dat file for changes, any modifications trigger a client update (push)
+  The dashboard monitors the status.dat file for changes, any modifications trigger a client update (push).
+
+  Nagios-Dashboard queries a Chef server or Opscode platform organization for additional host information.
 
 * Requirements
-*** Server
-  - A Linux distribution running Nagios
-  - Ruby 1.8 or 1.9 (MRI) & RubyGems
-  - Bundler Gem
-
-*** Interface
-  - A browser with WebSocket support
+  - A Linux distribution running Nagios http://www.nagios.org/
+  - An OpsCode Chef server or platform oranization http://opscode.com/chef/ http://opscode.com/platform/
+  - Credentials to query Chef, user & private key http://wiki.opscode.com/display/chef/Authentication
+  - Ruby MRI 1.8 or 1.9 & RubyGems http://www.ruby-lang.org/en/
+  - Bundler http://gembundler.com/
 
 * Install
   : cd opt
-  : wget nagios-dashboard.tar
+  : wget --no-check-certificate https://github.com/downloads/portertech/nagios-dashboard/nagios-dashboard.tar.gz
   : tar -xvf nagios-dashboard.tar
   : cd nagios-dashboard && bundle install
-  : ln -s /opt/nagios-dashboard/dashboard.rb /usr/local/bin/nagios-dashboard
-  : rehash
 
 * Run
-  : -> % nagios-dashboard -h
-  : Usage: dashboard.rb [options]
+  : -> % ./dashboard -h
+  : Usage: ./dashboard.rb (options)
+  :     -c, --chef SERVER                Use a Chef SERVER
+  :     -d, --datfile FILE               Location of Nagios status.dat FILE
+  :     -k, --key KEY                    Chef user KEY
+  :     -l, --logfile FILE               Log to a different FILE
+  :     -o, --organization ORGANIZATION  Use a OpsCode platform ORGANIZATION
+  :     -p, --port PORT                  Listen on a different PORT
+  :     -u, --user USER                  Chef USER name
   :     -v, --verbose                    Output debug messages to screen
-  :     -d, --datfile FILE               Location of Nagios status.dat FILE (default: /var/cache/nagios3/status.dat)
-  :     -p, --port PORT                  Listen on a different PORT (default: 80)
-  :     -l, --logfile FILE               Write log messages to FILE (default: ./debug.log)
-  :     -h, --help                       Display this screen
+  :     -h, --help                       Show this message
