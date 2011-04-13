@@ -104,7 +104,7 @@ EventMachine.run do
           env += "  host_name #{node['override']['app_environment']}_#{node['automatic']['hostname']}\n"
           if node['automatic'].include? 'roles'
             env += "  hostgroups #{node['automatic']['roles'].to_a.join(',')}\n"
-            if node['automatic']['roles'].include? 'spot' || testing.include? node['override']['app_environment']
+            if node['automatic']['roles'].include?('spot') || testing.include?(node['override']['app_environment'])
               env += "  notifications_enabled 0\n"
             end
           end
