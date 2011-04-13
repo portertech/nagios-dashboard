@@ -96,7 +96,7 @@ EventMachine.run do
       receive_json = proc do
         nodes = JSON.parse(request.body.read)
         env = ""
-        testing = %w{dev qa ua mikehale devops}
+        testing = %w{dev qa ua hax mikehale devops}
         nodes.each do |node|
           env += "define host {\n"
           env += "  use server\n"
