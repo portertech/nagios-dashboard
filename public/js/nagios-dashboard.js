@@ -5,7 +5,7 @@ $(document).ready(function(){
       $.each(attributes['automatic']['roles'], function() {
         roles += this + ' ';
       });
-      $('#chef-attributes').html(
+      $('.chef-attributes').html(
         '<strong>Environment: </strong><pre>'+attributes['override']['app_environment']+'</pre><br />'
         +'<strong>Node Name: </strong><pre>'+attributes['name']+'</pre><br />'
         +'<strong>Public IP: </strong><pre>'+attributes['automatic']['ec2']['public_ipv4']+'</pre><br />'
