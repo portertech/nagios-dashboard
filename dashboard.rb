@@ -124,7 +124,7 @@ EventMachine.run do
           File.open(nagios_config, "w") do |file|
             file.write(env)
           end
-          `/etc/init.d/nagios3 restart`
+          `sudo /etc/init.d/nagios3 reload`
         end
         "Successfully updated the Nagios host list for '#{node['override']['app_environment']}'"
       end
