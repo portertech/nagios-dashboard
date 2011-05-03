@@ -103,7 +103,7 @@ EventMachine.run do
           env += "  host_name #{node['override']['app_environment']}_#{node['automatic']['hostname']}\n"
           if node['nagios']['host']
             node['nagios']['host'].each do |k,v|
-              env += "  #{k} #{v}"
+              env += "  #{k} #{v}\n"
             end
           end
           if node['automatic'].include? 'roles'
