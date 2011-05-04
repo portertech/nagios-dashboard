@@ -96,13 +96,29 @@ EventMachine.run do
       receive_json = proc do
         nodes = JSON.parse(request.body.read)
         env = ""
+        ignore_stacks = "devops dev qa".split
+        host_attributes = {}
+        nagios_defaults = node['default']['nagios']['host'] rescue nil
+        nagios_overrides = node['override']['nagios']['host'] rescue nil
         nodes.each do |node|
+          next if ignore_stacks.include?(node['override']['app_environment'])
           env += "define host {\n"
           env += "  use server\n"
           env += "  address #{node['automatic']['ipaddress']}\n"
           env += "  host_name #{node['override']['app_environment']}_#{node['automatic']['hostname']}\n"
-          if node['nagios']['host']
-            node['nagios']['host'].each do |k,v|
+        
+          unless nagios_defaults.nil?
+            nagios_defaults.each do |k,v|
+              host_attributes[k] = v
+            end 
+          end
+          unless nagios_overrides.nil?
+            nagios_overrides.each do |k,v|
+              host_attributes[k] = v
+            end 
+          end
+          unless host_attributes.empty?
+            host_attributes.each do |k,v|
               env += "  #{k} #{v}\n"
             end
           end
