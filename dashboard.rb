@@ -103,19 +103,19 @@ EventMachine.run do
           env += "  use server\n"
           env += "  address #{node['automatic']['ipaddress']}\n"
           env += "  host_name #{node['override']['app_environment']}_#{node['automatic']['hostname']}\n"
-          host_attributes = Hash.new
+          host_options = Hash.new
           if node['default']['nagios'].has_key? 'host'
             node['default']['nagios']['host'].each do |k,v|
-              host_attributes[k] = v
+              host_options[k] = v
             end 
           end
           if node['override']['nagios'].has_key? 'host'
             node['override']['nagios']['host'].each do |k,v|
-              host_attributes[k] = v
+              host_options[k] = v
             end 
           end
-          unless host_attributes.empty?
-            host_attributes.each do |k,v|
+          unless host_options.empty?
+            host_options.each do |k,v|
               env += "  #{k} #{v}\n"
             end
           end
