@@ -96,9 +96,7 @@ EventMachine.run do
       receive_json = proc do
         nodes = JSON.parse(request.body.read)
         env = ""
-        ignore_stacks = "dev qa ua hax mikehale devops".split
         nodes.each do |node|
-          next if ignore_stacks.include?(node['override']['app_environment'])
           env += "define host {\n"
           env += "  use server\n"
           env += "  address #{node['automatic']['ipaddress']}\n"
