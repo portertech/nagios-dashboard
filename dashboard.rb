@@ -97,23 +97,20 @@ EventMachine.run do
         nodes = JSON.parse(request.body.read)
         env = ""
         ignore_stacks = "dev qa ua hax mikehale devops".split
-        host_attributes = {}
-        nagios_defaults = node['default']['nagios']['host'] rescue nil
-        nagios_overrides = node['override']['nagios']['host'] rescue nil
         nodes.each do |node|
           next if ignore_stacks.include?(node['override']['app_environment'])
           env += "define host {\n"
           env += "  use server\n"
           env += "  address #{node['automatic']['ipaddress']}\n"
           env += "  host_name #{node['override']['app_environment']}_#{node['automatic']['hostname']}\n"
-        
-          unless nagios_defaults.nil?
-            nagios_defaults.each do |k,v|
+          host_attributes = Hash.new
+          if node['default']['nagios'].has_key? 'host'
+            node['default']['nagios']['host'].each do |k,v|
               host_attributes[k] = v
             end 
           end
-          unless nagios_overrides.nil?
-            nagios_overrides.each do |k,v|
+          if node['override']['nagios'].has_key? 'host'
+            node['override']['nagios']['host'].each do |k,v|
               host_attributes[k] = v
             end 
           end
