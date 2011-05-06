@@ -96,7 +96,7 @@ EventMachine.run do
       receive_json = proc do
         nodes = JSON.parse(request.body.read)
         env = ""
-        ignore_stacks = "devops dev qa".split
+        ignore_stacks = "dev qa ua hax mikehale devops".split
         host_attributes = {}
         nagios_defaults = node['default']['nagios']['host'] rescue nil
         nagios_overrides = node['override']['nagios']['host'] rescue nil
