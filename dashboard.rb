@@ -96,6 +96,9 @@ EventMachine.run do
       receive_json = proc do
         nodes = JSON.parse(request.body.read)
         env = ""
+        nodes.reject! do |node|
+          node['automatic']['ipaddress'].nil || node['automatic']['ipaddress'] == ""
+        end
         nodes.each do |node|
           env += "define host {\n"
           env += "  use server\n"
