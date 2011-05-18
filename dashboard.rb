@@ -82,7 +82,7 @@ EventMachine.run do
       s.host = OPTIONS.config[:chef] || "api.opscode.com"
       s.port = 443
       s.scheme = "https"
-      s.url_path = 'organizations/' + OPTIONS.config[:organization] if OPTIONS.config[:chef].nil?
+      s.url_path = '/organizations/' + OPTIONS.config[:organization] if OPTIONS.config[:chef].nil?
       s.client_name = OPTIONS.config[:user]
       s.key_file = OPTIONS.config[:key]
     end
@@ -127,14 +127,18 @@ EventMachine.run do
   end
   
   update_clients = proc do |nagios|
-    websocket_connections.each do |websocket|
-      websocket.send nagios
+    unless nagios.nil?
+      websocket_connections.each do |websocket|
+        websocket.send nagios
+      end
+      log_message('updated clients')
     end
-    log_message('updated clients') if websocket_connections.count > 0
   end
 
   EMDirWatcher.watch File.dirname(File.expand_path(OPTIONS.config[:datfile])), :include_only => ['status.dat'], :grace_period => 0.5 do
-    EventMachine.defer(nagios_status, update_clients)
+    unless websocket_connections.count == 0
+      EventMachine.defer(nagios_status, update_clients)
+    end
   end
 
   Dashboard.run!({:port => OPTIONS.config[:port]})
