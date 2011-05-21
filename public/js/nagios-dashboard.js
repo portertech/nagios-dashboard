@@ -21,7 +21,7 @@ $(document).ready(function(){
       var status = '';
       if(data[msg]['status'] == 'CRITICAL') {
         status = "Critical";
-      } else if (data[msg]['status'] == 'WARNING') {
+      } else {
         status = "Warning";
       }
       var last_time_ok = new Date(data[msg]['last_time_ok'] * 1000);
