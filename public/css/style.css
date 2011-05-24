@@ -1,7 +1,7 @@
 body
 {
-	background-color: #4a4a4a;
 	background: url('/img/bg.png') no-repeat center center fixed;
+	background-color: #4a4a4a;
 	font-family: Helvetica;
 	margin: 0;
 	padding: 20px;
