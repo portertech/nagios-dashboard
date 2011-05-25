@@ -11,6 +11,8 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/portertech/nagios-dashboard"
   s.summary     = %q{A Nagios dashboard with OpsCode Chef integration.}
   s.description = %q{A Nagios dashboard with OpsCode Chef integration.}
+  s.has_rdoc    = false
+  s.license     = "MIT"
 
   s.rubyforge_project = "nagios-dashboard"
 
