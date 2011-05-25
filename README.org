@@ -6,26 +6,22 @@
 * How It Works
   Nagios-Dashboard parses the nagios status.dat file & sends the current status to clients via an HTML5 WebSocket.
 
-  The dashboard monitors the status.dat file for changes, any modifications trigger a client update (push).
+  The dashboard monitors the status.dat file for changes, any modifications trigger client updates (push).
 
   Nagios-Dashboard queries a Chef server or Opscode platform organization for additional host information.
 
 * Requirements
-  - A Linux distribution running Nagios http://www.nagios.org/
+  - Nagios http://www.nagios.org/
+  - Ruby (MRI) & RubyGems http://www.ruby-lang.org/en/
   - An OpsCode Chef server or platform oranization http://opscode.com/chef/ http://opscode.com/platform/
-  - Credentials to query Chef, user & private key http://wiki.opscode.com/display/chef/Authentication
-  - Ruby MRI 1.8 or 1.9 & RubyGems http://www.ruby-lang.org/en/
-  - Bundler http://gembundler.com/
+  - Credentials to query Chef, user name & private key http://wiki.opscode.com/display/chef/Authentication
 
 * Install
-  : cd opt
-  : wget --no-check-certificate https://github.com/downloads/portertech/nagios-dashboard/nagios-dashboard.tar.gz
-  : tar -xvf nagios-dashboard.tar
-  : cd nagios-dashboard && bundle install
+  : gem install nagios-dashboard
 
 * Run
-  : -> % ./dashboard -h
-  : Usage: ./dashboard.rb (options)
+  : -> % nagios-dashboard -h
+  : Usage: nagios-dashboard (options)
   :     -c, --chef SERVER                Use a Chef SERVER
   :     -d, --datfile FILE               Location of Nagios status.dat FILE
   :     -k, --key KEY                    Chef user KEY
@@ -35,3 +31,6 @@
   :     -u, --user USER                  Chef USER name
   :     -v, --verbose                    Output debug messages to screen
   :     -h, --help                       Show this message
+
+  Example:
+  : nagios-dashboard -u user -k ~/.chef/platform/user.pem -o chef-organization -d /var/cache/nagios3/status.dat -p 8080 -v
