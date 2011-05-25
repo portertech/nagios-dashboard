@@ -114,7 +114,7 @@ EventMachine.run do
   end
 
   websocket_connections = Array.new
-  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 9000) do |websocket|
+  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8000) do |websocket|
     websocket.onopen do
       websocket_connections.push websocket
       log_message('client connected to websocket')
