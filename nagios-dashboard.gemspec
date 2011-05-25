@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "nagios-dashboard/version"
 
 Gem::Specification.new do |s|
-  s.name        = "nagios-dashboard"
+  s.name        = "nagios-dashboard-sonian"
   s.version     = Nagios::Dashboard::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Sean Porter"]
@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.has_rdoc    = false
   s.license     = "MIT"
 
-  s.rubyforge_project = "nagios-dashboard"
+  s.rubyforge_project = "nagios-dashboard-sonian"
 
   s.add_development_dependency('bundler')
 
