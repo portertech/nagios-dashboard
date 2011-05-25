@@ -1,7 +1,18 @@
-#!/usr/bin/env ruby
-require 'rubygems'
-require 'bundler/setup'
-Bundler.require(:default)
+%w{
+  mixlib/cli
+  mixlib/log
+  json
+  thin
+  eventmachine
+  em-websocket
+  directory_watcher
+  nagios_analyzer
+  sinatra/async
+  haml
+  spice
+}.each do |gem|
+  require gem
+end
 
 class Options
   include Mixlib::CLI
@@ -27,7 +38,7 @@ class Options
   option :logfile,
     :short => '-l FILE',
     :long  => '--logfile FILE',
-    :default => File.dirname(__FILE__) + '/debug.log',
+    :default => '/tmp/nagios-dashboard.log',
     :description => 'Log to a different FILE'
 
   option :chef,
@@ -76,8 +87,9 @@ EventMachine.kqueue if EventMachine.kqueue?
 EventMachine.run do
   class Dashboard < Sinatra::Base
     register Sinatra::Async
+    set :root, File.dirname(__FILE__)
     set :static, true
-    set :public, 'public'
+    set :public, Proc.new { File.join(root, "static") }
 
     Spice.setup do |s|
       s.host = OPTIONS.config[:chef] || "api.opscode.com"

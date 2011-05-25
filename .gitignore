@@ -1,5 +1,8 @@
 \#*
 *~
-.DS_Store
+*.gem
 *.log
+.DS_Store
 .bundle
+Gemfile.lock
+pkg/*
