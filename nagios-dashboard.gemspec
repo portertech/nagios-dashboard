@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Sean Porter"]
   s.email       = ["portertech@gmail.com"]
   s.homepage    = "https://github.com/portertech/nagios-dashboard"
-  s.summary     = %q{A Nagios dashboard with OpsCode Chef integration.}
-  s.description = %q{A Nagios dashboard with OpsCode Chef integration.}
+  s.summary     = %q{A custom Nagios dashboard for Sonian, using nagios-dashboard.}
+  s.description = %q{A custom Nagios dashboard for Sonian, using nagios-dashboard.}
   s.has_rdoc    = false
   s.license     = "MIT"
 
