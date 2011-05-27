@@ -15,9 +15,10 @@
   - Ruby (MRI) & RubyGems http://www.ruby-lang.org/en/
   - An OpsCode Chef server or platform oranization http://opscode.com/chef/ http://opscode.com/platform/
   - Credentials to query Chef, user name & private key http://wiki.opscode.com/display/chef/Authentication
+  - Two open ports, one for the UI (default is 80, can change with -p), and port 8000 for an HTML5 WebSocket
 
 * Install
-  : gem install nagios-dashboard
+  : sudo gem install nagios-dashboard
 
 * Run
   : -> % nagios-dashboard -h
